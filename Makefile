@@ -1,10 +1,17 @@
-.PHONY: install-skill help
+.PHONY: install-skill package-skill help
 
 help:
 	@echo "Claude Code Skills Management"
 	@echo ""
 	@echo "Available commands:"
+	@echo "  make package-skill    Package a markdown file as a .skill file"
 	@echo "  make install-skill    Install a .skill file to ~/.claude/skills/"
+
+package-skill:
+	@read -p "Enter markdown file path: " md_file; \
+	read -p "Enter skill name (default: filename): " skill_name; \
+	read -p "Enter skill description: " description; \
+	./package-skill.sh -f "$$md_file" -n "$$skill_name" -d "$$description"
 
 install-skill:
 	@SKILLS=$$(ls -1 *.skill 2>/dev/null); \
