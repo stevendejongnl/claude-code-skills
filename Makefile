@@ -31,8 +31,11 @@ install-skill:
 	echo "📂 Installing $$SKILL_FILE..."; \
 	TEMP_DIR=$$(mktemp -d); \
 	unzip -q "$$SKILL_FILE" -d "$$TEMP_DIR"; \
-	SKILL_MD=$$(find "$$TEMP_DIR" -name "SKILL.md" -type f); \
-	if [ -z "$$SKILL_MD" ]; then \
+	SKILL_MD="$$TEMP_DIR/SKILL.md"; \
+	if [ ! -f "$$SKILL_MD" ]; then \
+		SKILL_MD=$$(find "$$TEMP_DIR" -name "SKILL.md" -type f | head -1); \
+	fi; \
+	if [ -z "$$SKILL_MD" ] || [ ! -f "$$SKILL_MD" ]; then \
 		echo "❌ SKILL.md not found in archive"; \
 		rm -rf "$$TEMP_DIR"; \
 		exit 1; \
@@ -43,9 +46,10 @@ install-skill:
 	mkdir -p "$$SKILLS_DIR"; \
 	SKILL_DIR=$$(dirname "$$SKILL_MD" | sed "s|$$TEMP_DIR||"); \
 	INSTALL_PATH="$$SKILLS_DIR$$SKILL_DIR"; \
-	mkdir -p "$$INSTALL_PATH"; \
+	mkdir -p "$$SKILLS_DIR"; \
+	rm -rf "$$SKILLS_DIR/$$SKILL_NAME" "$$SKILLS_DIR/SKILL.md"; \
 	cp -r "$$TEMP_DIR"/* "$$SKILLS_DIR"; \
-	chmod +x "$$SKILL_MD"; \
+	chmod +x "$$INSTALL_PATH/SKILL.md" 2>/dev/null || true; \
 	rm -rf "$$TEMP_DIR"; \
 	echo "✅ Installed: $$SKILL_NAME"; \
 	echo "📍 Location: $$INSTALL_PATH"; \
