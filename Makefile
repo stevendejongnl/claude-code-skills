@@ -47,9 +47,12 @@ install-skill:
 	SKILL_DIR=$$(dirname "$$SKILL_MD" | sed "s|$$TEMP_DIR||"); \
 	INSTALL_PATH="$$SKILLS_DIR$$SKILL_DIR"; \
 	mkdir -p "$$SKILLS_DIR"; \
-	rm -rf "$$SKILLS_DIR/$$SKILL_NAME" "$$SKILLS_DIR/SKILL.md"; \
-	cp -r "$$TEMP_DIR"/* "$$SKILLS_DIR"; \
-	chmod +x "$$INSTALL_PATH/SKILL.md" 2>/dev/null || true; \
+	rm -rf "$$SKILLS_DIR/$$SKILL_NAME"; \
+	if [ -d "$$TEMP_DIR/$$SKILL_NAME" ]; then \
+		cp -r "$$TEMP_DIR/$$SKILL_NAME" "$$SKILLS_DIR"; \
+	fi; \
+	cp -f "$$TEMP_DIR/SKILL.md" "$$SKILLS_DIR/SKILL.md"; \
+	chmod +x "$$SKILLS_DIR/SKILL.md" 2>/dev/null || true; \
 	rm -rf "$$TEMP_DIR"; \
 	echo "✅ Installed: $$SKILL_NAME"; \
 	echo "📍 Location: $$INSTALL_PATH"; \
